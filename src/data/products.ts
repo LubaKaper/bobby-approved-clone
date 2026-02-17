@@ -180,6 +180,22 @@ export const products: Product[] = [
   ],
   category: "Sauces",
 },
+{
+  barcode: "076808008876",
+  product_name: "Thin Spaghetti",
+  brand: "Barilla",
+  image: "/products/placeholder.jpg",
+  ingredients: [
+    "Semolina (Wheat)",
+    "Durum Wheat Flour",
+    "Vitamin B3 (Niacin)",
+    "Iron (Ferrous Sulfate)",
+    "Vitamin B1 (Thiamine Mononitrate)",
+    "Vitamin B2 (Riboflavin)",
+    "Folic Acid",
+  ],
+  category: "Pasta",
+},
 ];
 
 export function findProductByBarcode(barcode: string): Product | undefined {
