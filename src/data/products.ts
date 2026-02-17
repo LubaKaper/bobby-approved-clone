@@ -153,6 +153,33 @@ export const products: Product[] = [
     ],
     category: "Snacks",
   },
+  {
+  barcode: "013409352311",
+  product_name: "Original Barbecue Sauce",
+  brand: "Sweet Baby Ray's",
+  image: "/products/placeholder.jpg",
+  ingredients: [
+    "High Fructose Corn Syrup",
+    "Distilled Vinegar",
+    "Tomato Paste",
+    "Modified Corn Starch",
+    "Salt",
+    "Pineapple Juice Concentrate",
+    "Natural Smoke Flavor",
+    "Spice",
+    "Caramel Color",
+    "Molasses",
+    "Sodium Benzoate",
+    "Garlic",
+    "Mustard Flour",
+    "Corn Syrup",
+    "Sugar",
+    "Tamarind",
+    "Natural Flavor",
+    "Celery Seed"
+  ],
+  category: "Sauces",
+},
 ];
 
 export function findProductByBarcode(barcode: string): Product | undefined {
