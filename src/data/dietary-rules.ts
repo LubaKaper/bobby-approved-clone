@@ -1,0 +1,188 @@
+export interface DietaryRule {
+  key: string;
+  name: string;
+  type: "allergy" | "restriction" | "preference";
+  ingredients: string[];
+}
+
+export const DIETARY_RULES: DietaryRule[] = [
+  {
+    key: "gluten",
+    name: "Gluten",
+    type: "allergy",
+    ingredients: [
+      "wheat",
+      "barley",
+      "rye",
+      "malt",
+      "brewer's yeast",
+      "wheat flour",
+      "enriched wheat flour",
+      "wheat starch",
+      "wheat gluten",
+      "vital wheat gluten",
+      "durum",
+      "semolina",
+      "spelt",
+      "triticale",
+    ],
+  },
+  {
+    key: "dairy",
+    name: "Dairy",
+    type: "allergy",
+    ingredients: [
+      "milk",
+      "cream",
+      "cheese",
+      "butter",
+      "whey",
+      "casein",
+      "lactose",
+      "yogurt",
+      "sour cream",
+      "milk powder",
+      "nonfat milk",
+      "skim milk",
+      "half and half",
+      "ghee",
+      "buttermilk",
+    ],
+  },
+  {
+    key: "eggs",
+    name: "Eggs",
+    type: "allergy",
+    ingredients: ["egg", "eggs", "egg whites", "egg yolks", "albumin", "lysozyme", "mayonnaise"],
+  },
+  {
+    key: "peanuts",
+    name: "Peanuts",
+    type: "allergy",
+    ingredients: ["peanut", "peanuts", "peanut oil", "peanut butter", "peanut flour"],
+  },
+  {
+    key: "tree_nuts",
+    name: "Tree Nuts",
+    type: "allergy",
+    ingredients: [
+      "almonds",
+      "cashews",
+      "walnuts",
+      "pecans",
+      "pistachios",
+      "hazelnuts",
+      "macadamia",
+      "brazil nuts",
+    ],
+  },
+  {
+    key: "soy",
+    name: "Soy",
+    type: "allergy",
+    ingredients: ["soy", "soybean", "soy lecithin", "soy sauce", "tofu", "edamame", "soy protein"],
+  },
+  {
+    key: "fish",
+    name: "Fish",
+    type: "allergy",
+    ingredients: ["fish", "anchovy", "cod", "salmon", "tuna", "tilapia", "fish sauce", "fish oil"],
+  },
+  {
+    key: "shellfish",
+    name: "Shellfish",
+    type: "allergy",
+    ingredients: ["shrimp", "crab", "lobster", "crawfish", "clam", "mussel", "oyster", "scallop"],
+  },
+  {
+    key: "vegan",
+    name: "Vegan",
+    type: "restriction",
+    ingredients: [
+      "milk",
+      "cream",
+      "cheese",
+      "butter",
+      "eggs",
+      "egg",
+      "honey",
+      "gelatin",
+      "whey",
+      "casein",
+      "lard",
+      "tallow",
+      "shellac",
+      "carmine",
+      "anchovy",
+      "yogurt",
+      "sour cream",
+      "buttermilk",
+      "skim milk",
+      "lactose",
+    ],
+  },
+  {
+    key: "keto",
+    name: "Keto",
+    type: "restriction",
+    ingredients: [
+      "sugar",
+      "corn syrup",
+      "high fructose corn syrup",
+      "wheat flour",
+      "enriched wheat flour",
+      "rice",
+      "potato starch",
+      "maltodextrin",
+      "dextrose",
+      "cane sugar",
+      "brown sugar",
+      "molasses",
+    ],
+  },
+  {
+    key: "no_added_sugar",
+    name: "No Added Sugar",
+    type: "preference",
+    ingredients: [
+      "corn syrup",
+      "high fructose corn syrup",
+      "cane sugar",
+      "dextrose",
+      "maltodextrin",
+      "sucrose",
+      "fructose",
+      "brown sugar",
+      "honey",
+      "agave",
+      "molasses",
+      "invert sugar",
+      "turbinado sugar",
+      "sugar",
+    ],
+  },
+  {
+    key: "no_seed_oils",
+    name: "No Seed Oils",
+    type: "preference",
+    ingredients: [
+      "soybean oil",
+      "canola oil",
+      "sunflower oil",
+      "safflower oil",
+      "cottonseed oil",
+      "rapeseed oil",
+      "corn oil",
+      "grapeseed oil",
+      "rice bran oil",
+    ],
+  },
+];
+
+// Get all unique rule options for the profile UI
+export function getAllProfileOptions() {
+  const allergies = DIETARY_RULES.filter((r) => r.type === "allergy");
+  const restrictions = DIETARY_RULES.filter((r) => r.type === "restriction");
+  const preferences = DIETARY_RULES.filter((r) => r.type === "preference");
+  return { allergies, restrictions, preferences };
+}
