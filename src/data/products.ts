@@ -211,7 +211,7 @@ export const products: Product[] = [
     category: "Snacks",
   },
   {
-    barcode: "006619533602",
+    barcode: "096619533602",
     product_name: "Kirkland Signature Organic Quinoa",
     brand: "Kirkland Signature",
     image: "/products/placeholder.jpg",
