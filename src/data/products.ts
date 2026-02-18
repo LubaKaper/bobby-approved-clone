@@ -196,6 +196,44 @@ export const products: Product[] = [
   ],
   category: "Pasta",
 },
+  {
+    barcode: "096619816927",
+    product_name: "Kirkland Signature Microwave Popcorn",
+    brand: "Kirkland Signature",
+    image: "/products/placeholder.jpg",
+    ingredients: [
+      "Popcorn",
+      "Palm Oil",
+      "Salt",
+      "Natural Flavor",
+      "Color Added"
+    ],
+    category: "Snacks",
+  },
+  {
+    barcode: "006619533602",
+    product_name: "Kirkland Signature Organic Quinoa",
+    brand: "Kirkland Signature",
+    image: "/products/placeholder.jpg",
+    ingredients: [
+      "Organic Quinoa"
+    ],
+    category: "Grains",
+  },
+  {
+    barcode: "00726764",
+    product_name: "Trader Joe's Organic Naan Crackers",
+    brand: "Trader Joe's",
+    image: "/products/placeholder.jpg",
+    ingredients: [
+      "Organic Wheat Flour",
+      "Organic Sunflower Oil",
+      "Organic Cane Sugar",
+      "Sea Salt",
+      "Yeast"
+    ],
+    category: "Snacks",
+  }
 ];
 
 export function findProductByBarcode(barcode: string): Product | undefined {
