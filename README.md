@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bobby Approved
+
+A mobile-first food product scanner that checks ingredients against Bobby's flagged additives list and your personal dietary profile.
+
+## Tech Stack
+
+- **Next.js 16** (App Router) + **React 19**
+- **Tailwind CSS 4** with custom `bobby-*` color theme
+- **TypeScript 5**
+- **html5-qrcode** for barcode scanning via device camera
+- **OpenAI API** (`gpt-4o-mini`) for AI-powered ingredient explanations
+
+## Features
+
+- **Barcode scanning** — scan products with your phone camera
+- **Bobby approval ratings** — flags 33 common processed additives (corn syrup, artificial colors, seed oils, etc.)
+- **Dietary conflict detection** — checks products against your allergies, restrictions, and preferences
+- **Allergen profiles** — set up allergies (gluten, dairy, nuts, etc.), restrictions (vegan, keto), and preferences (no seed oils, no added sugar) stored in localStorage
+- **AI explanations** — get natural-language breakdowns of why a product passes or fails
+
+## Project Structure
+
+```
+src/
+├── app/                          # Next.js App Router pages & API
+│   ├── api/explain/route.ts      # OpenAI explanation endpoint
+│   ├── page.tsx                  # Home — categories & demo products
+│   ├── scanner/page.tsx          # Barcode scanner
+│   ├── result/[barcode]/page.tsx # Product approval result
+│   ├── search/page.tsx           # Search products by name/brand/ingredient
+│   ├── ingredients/page.tsx      # Browse products by category
+│   └── profile/page.tsx          # Dietary profile setup wizard
+├── components/                   # Reusable React components
+├── data/                         # Product database, flagged ingredients, dietary rules
+├── lib/                          # Business logic (approval checks, dietary checks, profile storage)
+└── types/                        # TypeScript type definitions
+```
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Set up environment variables
+
+Create a `.env.local` file in the project root:
+
+```
+OPENAI_API_KEY=your_key_here
+```
+
+The AI explanation feature falls back to template responses if no key is provided.
+
+### 3. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route | Description |
+|-------|-------------|
+| `/` | Home — shopping lists, categories, demo products |
+| `/scanner` | Full-screen barcode scanner |
+| `/result/[barcode]` | Product approval details |
+| `/search` | Search products by name, brand, or ingredient |
+| `/ingredients` | Browse all products by category |
+| `/profile` | Multi-step dietary profile setup |
+| `/api/explain` | POST — AI ingredient explanation |
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run start` | Serve production build |
+| `npm run lint` | Run ESLint |
