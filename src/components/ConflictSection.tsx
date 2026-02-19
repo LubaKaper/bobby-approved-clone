@@ -1,12 +1,87 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { DietaryConflict } from "@/types";
+
+interface ConflictAdvice {
+  summary: string;
+  suggestions: string[];
+  source: "ai" | "deterministic";
+}
 
 interface ConflictSectionProps {
   conflicts: DietaryConflict[];
+  productName: string;
+  brand?: string;
 }
 
-export default function ConflictSection({ conflicts }: ConflictSectionProps) {
+export default function ConflictSection({
+  conflicts,
+  productName,
+  brand,
+}: ConflictSectionProps) {
+  const [advice, setAdvice] = useState<ConflictAdvice | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (conflicts.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    const cacheKey = `conflict_advice_${JSON.stringify({ productName, conflicts })}`;
+
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        setAdvice(JSON.parse(cached));
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // sessionStorage unavailable, continue with fetch
+    }
+
+    fetch("/api/explain", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode: "conflict_advice",
+        productName,
+        brand,
+        conflicts: conflicts.map((c) => ({
+          ruleKey: c.ruleKey,
+          ruleName: c.ruleName,
+          conflictingIngredients: c.conflictingIngredients,
+        })),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data: ConflictAdvice) => {
+        setAdvice(data);
+        try {
+          sessionStorage.setItem(cacheKey, JSON.stringify(data));
+        } catch {
+          // sessionStorage full or unavailable
+        }
+      })
+      .catch(() => {
+        // Local fallback if fetch itself fails
+        const summaryParts = conflicts.map(
+          (c) =>
+            `This product conflicts with your ${c.ruleName} profile because it contains ${c.conflictingIngredients.join(", ")}.`
+        );
+        setAdvice({
+          summary: summaryParts.join(" "),
+          suggestions: [
+            "Check the label for alternative products that fit your dietary needs",
+          ],
+          source: "deterministic",
+        });
+      })
+      .finally(() => setLoading(false));
+  }, [productName, brand, conflicts]);
+
   if (conflicts.length === 0) return null;
 
   return (
@@ -27,6 +102,17 @@ export default function ConflictSection({ conflicts }: ConflictSectionProps) {
         <h3 className="font-semibold text-gray-900">
           Conflicts With Your Profile
         </h3>
+        {advice && (
+          <span
+            className={`ml-auto text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+              advice.source === "ai"
+                ? "bg-bobby-teal-50 text-bobby-teal-dark"
+                : "bg-gray-100 text-gray-500"
+            }`}
+          >
+            {advice.source === "ai" ? "AI Assist" : "Demo mode"}
+          </span>
+        )}
       </div>
 
       <div className="space-y-3">
@@ -49,6 +135,35 @@ export default function ConflictSection({ conflicts }: ConflictSectionProps) {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-bobby-amber/20">
+        {loading ? (
+          <div className="animate-pulse space-y-2">
+            <div className="h-4 bg-amber-200/50 rounded w-full" />
+            <div className="h-4 bg-amber-200/50 rounded w-5/6" />
+            <div className="h-4 bg-amber-200/50 rounded w-3/4 mt-3" />
+            <div className="h-4 bg-amber-200/50 rounded w-4/5" />
+          </div>
+        ) : advice ? (
+          <>
+            <h4 className="text-sm font-semibold text-gray-900 mb-1">
+              What this means
+            </h4>
+            <p className="text-sm text-gray-600 mb-3">{advice.summary}</p>
+            <h4 className="text-sm font-semibold text-gray-900 mb-1">
+              Suggestions
+            </h4>
+            <ul className="space-y-1">
+              {advice.suggestions.map((s, i) => (
+                <li key={i} className="text-sm text-gray-600 flex gap-2">
+                  <span>•</span>
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
       </div>
     </div>
   );
