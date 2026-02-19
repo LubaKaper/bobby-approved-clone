@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { DietaryConflict } from "@/types";
 
 interface ConflictAdvice {
@@ -21,11 +21,10 @@ export default function ConflictSection({
   brand,
 }: ConflictSectionProps) {
   const [advice, setAdvice] = useState<ConflictAdvice | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(conflicts.length > 0);
 
   useEffect(() => {
     if (conflicts.length === 0) {
-      setLoading(false);
       return;
     }
 
@@ -34,8 +33,10 @@ export default function ConflictSection({
     try {
       const cached = sessionStorage.getItem(cacheKey);
       if (cached) {
-        setAdvice(JSON.parse(cached));
-        setLoading(false);
+        startTransition(() => {
+          setAdvice(JSON.parse(cached));
+          setLoading(false);
+        });
         return;
       }
     } catch {

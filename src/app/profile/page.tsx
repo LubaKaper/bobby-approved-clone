@@ -1,18 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getUserProfile, saveUserProfile } from "@/lib/profile";
 import { UserProfile } from "@/types";
-import { DIETARY_RULES } from "@/data/dietary-rules";
-
-const ALLERGENS = [
-  "Other", "Oat", "Soy", "Corn", "Barley", "Rye",
-  "Wheat", "Gluten", "Eggs", "Peanuts", "Mollusks", "Tree nuts",
-  "Sesame", "Fish", "Shellfish", "Coconut", "Almonds", "Milk/Dairy",
-  "Allium", "Red Meat",
-];
 
 const ALLERGEN_DISPLAY = [
   "Other", "Oat", "Soy", "Corn", "Barley", "Rye",
@@ -86,15 +78,16 @@ export default function ProfilePage() {
     for (const [name, key] of Object.entries(ALLERGEN_KEY_MAP)) {
       if (profile.allergies.includes(key)) allergenNames.add(name);
     }
-    setSelectedAllergens(allergenNames);
-
     const habitNames = new Set<string>();
     for (const [name, key] of Object.entries(HABIT_KEY_MAP)) {
       if (profile.restrictions.includes(key) || profile.preferences.includes(key)) {
         habitNames.add(name);
       }
     }
-    setSelectedHabits(habitNames);
+    startTransition(() => {
+      setSelectedAllergens(allergenNames);
+      setSelectedHabits(habitNames);
+    });
   }, []);
 
   const toggleAllergen = (name: string) => {
@@ -272,7 +265,7 @@ export default function ProfilePage() {
           <h2 className="font-semibold text-lg mb-2">Meet Bobby</h2>
           <div className="bg-white rounded-xl shadow divide-y divide-gray-200">
             <div className="flex items-center justify-between py-3 px-4">
-              <span>Who's Bobby?</span>
+              <span>Who&apos;s Bobby?</span>
               <span className="text-gray-400">&gt;</span>
             </div>
           </div>

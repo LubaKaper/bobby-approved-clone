@@ -15,7 +15,7 @@ const DIET_RULES = [
   { key: "dairyFree", label: "Dairy-Free" },
 ];
 
-export default function IngredientIntelligencePanel({ product, approval, conflicts }: IngredientIntelligencePanelProps) {
+export default function IngredientIntelligencePanel({}: IngredientIntelligencePanelProps) {
   const [expanded, setExpanded] = useState(false);
   const [selectedDiet, setSelectedDiet] = useState("general");
 

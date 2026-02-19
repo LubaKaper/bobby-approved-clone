@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import IngredientIntelligencePanel from "./IngredientIntelligencePanel";
+import { Product, ApprovalResult, DietaryConflict } from "@/types";
 
 interface IngredientListProps {
   ingredients: string[];
   flaggedIngredients: string[];
-  product?: any;
-  approval?: any;
-  conflicts?: any;
+  product?: Product;
+  approval?: ApprovalResult;
+  conflicts?: DietaryConflict[];
 }
 
 export default function IngredientList({

@@ -6,6 +6,10 @@ type Rating = "avoid" | "approved" | "caution";
 const DOT: Record<Rating, string> = { avoid: "#C41E3A", approved: "#0D9488", caution: "#E5A100" };
 interface GuideCategory { cat: string; desc: string; rating: Rating; }
 interface GuideIngredient { name: string; ratings: Rating[]; categories: GuideCategory[]; }
+type IngredientResult = { name: string; cls: string; exp: string };
+type Analysis = { results: IngredientResult[]; av: number; ca: number; ok: number; total: number; score: number; grade: string };
+type Summary = { opening: string; concerns: string; rec: string; swapText: string; sev: string; compound: string };
+type ResultsState = Analysis & { summary: Summary };
 
 // --- Intelligence Engine Data ---
 const DIETS: Record<string, { label: string; emoji: string; color: string; desc: string; avoidList: string[]; cautionList: string[] }> = {
@@ -34,14 +38,14 @@ function analyzeIngredients(raw: string, diet: string) {
   const grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : score >= 50 ? "D" : "F";
   return { results: res, av, ca, ok, total: res.length, score, grade };
 }
-function genSummary(r: any, diet: string, name: string) {
-  const d = DIETS[diet]; const avoids = r.results.filter((x: any) => x.cls === "avoid");
+function genSummary(r: Analysis, diet: string, name: string): Summary {
+  const d = DIETS[diet]; const avoids = r.results.filter((x: IngredientResult) => x.cls === "avoid");
   let opening = `${name} scores ${r.score}/100 for ${d.label.toLowerCase()}.`;
   opening += r.score >= 85 ? " Strong choice!" : r.score >= 70 ? " Decent with minor concerns." : r.score >= 50 ? " Several ingredients need attention." : " Multiple conflicts with your goals.";
-  const concerns = avoids.length > 0 ? `Avoid: ${avoids.map((i: any) => i.name).join(", ")}.` : "";
+  const concerns = avoids.length > 0 ? `Avoid: ${avoids.map((i: IngredientResult) => i.name).join(", ")}.` : "";
   const rec = r.score < 70 ? `Consider alternatives for ${d.label.toLowerCase()} diet.` : r.score < 85 ? "Check flagged ingredients before purchasing." : "";
   const swaps: string[] = [];
-  avoids.slice(0, 3).forEach((i: any) => {
+  avoids.slice(0, 3).forEach((i: IngredientResult) => {
     const n = i.name.toLowerCase();
     if (n.includes("sugar") || n.includes("corn syrup") || n.includes("fructose")) swaps.push(`${i.name} → monk fruit/stevia`);
     else if (n.includes("wheat") || n.includes("flour")) swaps.push(`${i.name} → almond/coconut flour`);
@@ -97,7 +101,7 @@ export default function IngredientsPage() {
   // Intel state
   const [diet, setDiet] = useState("general");
   const [inputText, setInputText] = useState("");
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<ResultsState | null>(null);
   const [productName, setProductName] = useState("");
   const [expandedIng, setExpandedIng] = useState<string | null>(null);
   const [showAI, setShowAI] = useState(true);
@@ -256,19 +260,19 @@ export default function IngredientsPage() {
                 {results.summary.rec && <div style={{ display: "flex", gap: 8, padding: "8px 10px", background: "rgba(255,255,255,.04)", borderRadius: 8, marginBottom: 8 }}><span style={{ fontSize: 14 }}>💡</span><p style={{ margin: 0, fontSize: 11, color: "#A5B4FC", lineHeight: 1.5 }}>{results.summary.rec}</p></div>}
                 {results.summary.swapText && <div style={{ display: "flex", gap: 8, padding: "8px 10px", background: "rgba(16,185,129,.08)", borderRadius: 8, marginBottom: 8, border: "1px solid rgba(16,185,129,.15)" }}><span style={{ fontSize: 14 }}>🔄</span><p style={{ margin: 0, fontSize: 11, color: "#6EE7B7", lineHeight: 1.5, fontWeight: 500 }}>{results.summary.swapText}</p></div>}
                 {results.summary.compound && <div style={{ padding: "8px 10px", background: "rgba(239,68,68,.1)", borderRadius: 8, border: "1px solid rgba(239,68,68,.15)" }}><p style={{ margin: 0, fontSize: 10, color: "#FCA5A5" }}>{results.summary.compound}</p></div>}
-                <p style={{ margin: "8px 0 0", fontSize: 9, color: "#6366F180", textAlign: "right" }}>Powered by Juan's Dietary Intelligence Engine</p>
+                <p style={{ margin: "8px 0 0", fontSize: 9, color: "#6366F180", textAlign: "right" }}>Powered by Juan&apos;s Dietary Intelligence Engine</p>
               </div>)}
             </div>)}
             {/* Breakdown */}
             {(["avoid", "caution", "ok"] as const).map(c => {
-              const items = results.results.filter((r: any) => r.cls === c);
+              const items = results.results.filter((r: IngredientResult) => r.cls === c);
               if (!items.length) return null;
               return (<div key={c} style={{ marginBottom: 10 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}>
                   <div style={{ width: 20, height: 20, borderRadius: 6, background: CC[c] + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: CC[c] }}>{c === "avoid" ? "✕" : c === "caution" ? "⚠" : "✓"}</div>
                   <span style={{ fontSize: 11, fontWeight: 700, color: CC[c], textTransform: "uppercase" }}>{CL[c]} ({items.length})</span>
                 </div>
-                {items.map((it: any, i: number) => { const isE = expandedIng === `${c}-${i}`; return (
+                {items.map((it: IngredientResult, i: number) => { const isE = expandedIng === `${c}-${i}`; return (
                   <div key={i} onClick={() => setExpandedIng(isE ? null : `${c}-${i}`)} style={{ padding: "9px 12px", marginBottom: 3, borderRadius: 10, background: CC[c] + "06", border: `1.5px solid ${CC[c]}15`, cursor: "pointer" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>

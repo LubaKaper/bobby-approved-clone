@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { findProductByBarcode } from "@/data/products";
 import { checkBobbyApproval } from "@/lib/approval";
 import { checkDietaryConflicts } from "@/lib/dietary";
@@ -26,14 +26,16 @@ export default function ResultPage() {
 
   useEffect(() => {
     const found = findProductByBarcode(barcode);
-    if (!found) {
-      setNotFound(true);
-      return;
-    }
-    setProduct(found);
-    setApproval(checkBobbyApproval(found));
-    const profile = getUserProfile();
-    setConflicts(checkDietaryConflicts(found, profile));
+    startTransition(() => {
+      if (!found) {
+        setNotFound(true);
+        return;
+      }
+      setProduct(found);
+      setApproval(checkBobbyApproval(found));
+      const profile = getUserProfile();
+      setConflicts(checkDietaryConflicts(found, profile));
+    });
   }, [barcode]);
 
   if (notFound) {

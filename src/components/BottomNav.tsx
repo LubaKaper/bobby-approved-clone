@@ -26,7 +26,8 @@ const tabs = [
     label: "",
     href: "/scanner",
     isScanner: true,
-    icon: (_active: boolean) => (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    icon: (_: boolean) => (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" fill="none" stroke="white" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="w-8 h-7">
         {/* Top-left bracket */}
         <polyline points="7,3.5 2.5,3.5 2.5,8.5" />

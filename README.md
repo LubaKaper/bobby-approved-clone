@@ -13,7 +13,7 @@ A mobile-first food product scanner that checks ingredients against Bobby's flag
 ## Features
 
 - **Barcode scanning** — scan products with your phone camera
-- **Bobby approval ratings** — flags 33 common processed additives (corn syrup, artificial colors, seed oils, etc.)
+- **Bobby approval ratings** — flags common processed additives including seed oils (soybean, canola, corn, vegetable oil), artificial/natural flavors, caramel color, preservatives, sweeteners, and dyes; also detects enriched grain products and applies a best-effort non-organic wheat flag for pasta/grain category items
 - **Dietary conflict detection** — checks products against your allergies, restrictions, and preferences
 - **Allergen profiles** — set up allergies (gluten, dairy, nuts, etc.), restrictions (vegan, keto), and preferences (no seed oils, no added sugar) stored in localStorage
 - **AI explanations** — get natural-language breakdowns of why a product passes or fails
@@ -62,6 +62,17 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Testing
+
+Unit tests cover the core approval and dietary conflict logic. No browser or UI required.
+
+```bash
+npx vitest run    # single run, exits with results
+npm test          # watch mode — re-runs on file save
+```
+
+Tests live in `src/lib/__tests__/`. They are deterministic, use no mocks, and run in under 1 second.
+
 ## Available Routes
 
 | Route | Description |
@@ -81,4 +92,5 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm run dev` | Start development server |
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
+| `npm test` | Run unit tests (Vitest watch mode) |
 | `npm run lint` | Run ESLint |

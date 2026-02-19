@@ -18,12 +18,12 @@ Bobby Approved is a mobile-first Next.js app that scans food product barcodes an
 | File | Purpose |
 |------|---------|
 | `src/data/products.ts` | Demo product database (barcode, name, brand, ingredients, category) |
-| `src/data/flagged-ingredients.ts` | Bobby's 33 flagged additives |
+| `src/data/flagged-ingredients.ts` | Bobby's flagged additives list (seed oils, artificial/natural flavors, caramel color, preservatives, sweeteners, dyes, and more) |
 | `src/data/dietary-rules.ts` | 12 dietary rules (8 allergies, 2 restrictions, 2 preferences) |
-| `src/lib/approval.ts` | `checkBobbyApproval(product)` — matches ingredients against flagged list |
+| `src/lib/approval.ts` | `checkBobbyApproval(product)` — matches ingredients against flagged list; also runs enriched_grain and non_organic_wheat_heuristic rules, returning `heuristicFlags[]` |
 | `src/lib/dietary.ts` | `checkDietaryConflicts(product, profile)` — matches ingredients against user's dietary rules |
 | `src/lib/profile.ts` | `getUserProfile()` / `saveUserProfile()` — localStorage CRUD for user profile |
-| `src/types/index.ts` | All TypeScript interfaces: `Product`, `UserProfile`, `ApprovalResult`, `DietaryConflict` |
+| `src/types/index.ts` | All TypeScript interfaces: `Product`, `UserProfile`, `ApprovalResult`, `HeuristicFlag`, `DietaryConflict` |
 | `src/app/api/explain/route.ts` | POST endpoint — sends ingredients to OpenAI `gpt-4o-mini`, falls back to templates |
 | `src/components/BarcodeScanner.tsx` | Wraps html5-qrcode library for camera-based barcode scanning |
 | `src/components/ApprovalBadge.tsx` | Green/red badge for approval status |
@@ -31,11 +31,14 @@ Bobby Approved is a mobile-first Next.js app that scans food product barcodes an
 | `src/components/ExplanationSection.tsx` | Fetches and displays AI explanation |
 | `src/components/IngredientList.tsx` | Lists ingredients, highlights flagged ones |
 | `src/components/BottomNav.tsx` | Fixed bottom tab navigation (Home, Search, Scanner, Ingredients, Profile) |
+| `src/lib/__tests__/approval.test.ts` | Vitest unit tests for `checkBobbyApproval` (8 tests) |
+| `src/lib/__tests__/dietary.test.ts`  | Vitest unit tests for `checkDietaryConflicts` (7 tests) |
+| `vitest.config.ts` | Vitest config — node environment, resolves `@/` path alias |
 
 ## Data Flow
 
 1. Product scanned or selected → look up in `products.ts` by barcode
-2. Run `checkBobbyApproval(product)` → returns `{ approved, flaggedIngredients[] }`
+2. Run `checkBobbyApproval(product)` → returns `{ approved, flaggedIngredients[], heuristicFlags[] }`
 3. Load user profile from localStorage via `getUserProfile()`
 4. Run `checkDietaryConflicts(product, userProfile)` → returns `DietaryConflict[]`
 5. Display results on `/result/[barcode]` page
@@ -55,8 +58,20 @@ Managed by `src/lib/profile.ts`. Default is empty arrays.
 npm run dev      # Start dev server
 npm run build    # Production build
 npm run start    # Serve production build
+npm test         # Run unit tests (Vitest)
 npm run lint     # ESLint
 ```
+
+## Unit Tests
+
+Tests cover `checkBobbyApproval` and `checkDietaryConflicts` using Vitest. No mocks, no jsdom — pure logic tests.
+
+```bash
+npx vitest run   # single pass (use before committing)
+npm test         # watch mode
+```
+
+15 tests total across 2 files. All tests are independent and use inline product fixtures.
 
 ## Environment
 

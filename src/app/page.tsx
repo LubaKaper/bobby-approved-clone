@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { getUserProfile } from "@/lib/profile";
 
 const STORE_LOGOS = [
@@ -31,7 +31,9 @@ export default function HomePage() {
 
   useEffect(() => {
     const profile = getUserProfile();
-    setProfileCount(profile.allergies.length + profile.restrictions.length);
+    startTransition(() => {
+      setProfileCount(profile.allergies.length + profile.restrictions.length);
+    });
   }, []);
 
   return (
