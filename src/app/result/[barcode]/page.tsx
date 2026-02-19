@@ -161,7 +161,11 @@ export default function ResultPage() {
         </div>
 
         {/* Dietary Conflicts */}
-        <ConflictSection conflicts={conflicts} />
+        <ConflictSection
+          conflicts={conflicts}
+          productName={product.product_name}
+          brand={product.brand}
+        />
 
         {/* AI Explanation */}
         <ExplanationSection
