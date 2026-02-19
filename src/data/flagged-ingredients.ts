@@ -30,4 +30,16 @@ export const BOBBY_FLAGGED_INGREDIENTS: string[] = [
   "acesulfame potassium",
   "polysorbate 80",
   "propylene glycol",
+  // Seed oils (expanded)
+  "corn oil",
+  "grapeseed oil",
+  "rice bran oil",
+  "vegetable oil",
+  "seed oil",
+  // Flavor additives
+  "natural flavor",
+  "natural flavors",
+  "artificial flavor",
+  // Color additives
+  "caramel color",
 ];

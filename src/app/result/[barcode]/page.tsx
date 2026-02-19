@@ -148,16 +148,44 @@ export default function ResultPage() {
       {/* Content */}
       <div className="px-4 pt-4 space-y-4">
         {/* Approval */}
-        <ApprovalBadge approved={approval.approved} />
+        <ApprovalBadge
+          approved={approval.approved}
+          showDisclaimer={(approval.heuristicFlags?.length ?? 0) > 0}
+        />
 
         {/* Ingredients */}
-        <IngredientList
-          ingredients={product.ingredients}
-          flaggedIngredients={approval.flaggedIngredients}
-          product={product}
-          approval={approval}
-          conflicts={conflicts}
-        />
+        {(() => {
+          const allFlaggedForDisplay = [
+            ...approval.flaggedIngredients,
+            ...(approval.heuristicFlags?.flatMap((f) => f.ingredients) ?? []),
+          ];
+          return (
+            <IngredientList
+              ingredients={product.ingredients}
+              flaggedIngredients={allFlaggedForDisplay}
+              product={product}
+              approval={approval}
+              conflicts={conflicts}
+            />
+          );
+        })()}
+
+        {/* Additional (heuristic/deterministic) flags */}
+        {(approval.heuristicFlags?.length ?? 0) > 0 && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+            <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">
+              Additional Flags
+            </p>
+            {approval.heuristicFlags!.map((flag) => (
+              <div key={flag.ruleId} className="mb-2 last:mb-0">
+                <p className="text-sm text-amber-800">{flag.reason}</p>
+                <p className="text-xs text-amber-600 mt-0.5">
+                  Matched: {flag.ingredients.join(", ")}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Report Issue */}
         <div className="flex justify-center">

@@ -13,9 +13,16 @@ export interface UserProfile {
   preferences: string[];
 }
 
+export interface HeuristicFlag {
+  ruleId: string;
+  reason: string;
+  ingredients: string[];
+}
+
 export interface ApprovalResult {
   approved: boolean;
   flaggedIngredients: string[];
+  heuristicFlags?: HeuristicFlag[];
 }
 
 export interface DietaryConflict {
