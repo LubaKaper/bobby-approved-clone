@@ -237,7 +237,19 @@ export const products: Product[] = [
     product_name: "MAESRI MASAMAN CURRY PASTE",
     brand: "Maesri",
     image: "/products/placeholder.jpg",
-    ingredients: [],
+   ingredients: [
+    "Garlic",
+    "Sugar",
+    "Highly Refined Soybean Oil",
+    "Dried Chili Pepper",
+    "Tamarind Juice",
+    "Shallot",
+    "Salt",
+    "Lemongrass",
+    "Spices",
+    "Kaffir Lime",
+    "Galangal"
+  ],
     category: "Curry Paste",
   },
 ];
