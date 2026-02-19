@@ -11,6 +11,7 @@ import ApprovalBadge from "@/components/ApprovalBadge";
 import IngredientList from "@/components/IngredientList";
 import ConflictSection from "@/components/ConflictSection";
 import ExplanationSection from "@/components/ExplanationSection";
+import IngredientIntelligencePanel from "@/components/IngredientIntelligencePanel";
 import Link from "next/link";
 
 export default function ResultPage() {
@@ -120,7 +121,7 @@ export default function ResultPage() {
       </div>
 
       {/* Product image card */}
-      <div className="px-4 mb-4">
+      <div className="px-4 mb-4 relative">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center justify-center relative">
           <div className="w-48 h-48 bg-gray-50 rounded-xl flex items-center justify-center text-6xl">
             {product.category === "Sauces" ? "🫙" :
@@ -139,6 +140,8 @@ export default function ResultPage() {
               B
             </div>
           </div>
+          {/* 🧪 Ingredient Intelligence Panel Button */}
+          <IngredientIntelligencePanel product={product} approval={approval} conflicts={conflicts} />
         </div>
       </div>
 
@@ -151,6 +154,9 @@ export default function ResultPage() {
         <IngredientList
           ingredients={product.ingredients}
           flaggedIngredients={approval.flaggedIngredients}
+          product={product}
+          approval={approval}
+          conflicts={conflicts}
         />
 
         {/* Report Issue */}

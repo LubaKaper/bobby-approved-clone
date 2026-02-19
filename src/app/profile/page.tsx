@@ -5,8 +5,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getUserProfile, saveUserProfile } from "@/lib/profile";
 import { UserProfile } from "@/types";
+import { DIETARY_RULES } from "@/data/dietary-rules";
 
 const ALLERGENS = [
+  "Other", "Oat", "Soy", "Corn", "Barley", "Rye",
+  "Wheat", "Gluten", "Eggs", "Peanuts", "Mollusks", "Tree nuts",
+  "Sesame", "Fish", "Shellfish", "Coconut", "Almonds", "Milk/Dairy",
+  "Allium", "Red Meat",
+];
+
+const ALLERGEN_DISPLAY = [
   "Other", "Oat", "Soy", "Corn", "Barley", "Rye",
   "Wheat", "Gluten", "Eggs", "Peanuts", "Mollusks", "Tree nuts",
   "Sesame", "Fish", "Shellfish", "Coconut", "Almonds", "Milk/Dairy",
@@ -61,6 +69,11 @@ const HABIT_KEY_MAP: Record<string, string> = {
 };
 
 export default function ProfilePage() {
+  // Demo profile info for display
+  const demoProfile = {
+    name: "",
+    email: "demo123@gmail.com",
+  };
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [selectedAllergens, setSelectedAllergens] = useState<Set<string>>(new Set());
@@ -126,36 +139,18 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-to-b from-bobby-teal to-bobby-teal-light px-4 pt-12 pb-8">
-        <button
-          onClick={() => (step === 2 ? setStep(1) : router.back())}
-          className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth={2} className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-
-        {/* Bobby avatar + speech bubble */}
-        <div className="flex items-start justify-center gap-3 mt-2">
-          {/* Avatar */}
-          <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0 shadow-md">
-            <Image src="/bobby-avatar.svg" alt="Bobby" width={96} height={96} className="w-full h-full object-cover" />
-          </div>
-
-          {/* Speech bubble */}
-          <div className="relative bg-white rounded-2xl px-4 py-3 mt-2 shadow-sm max-w-[200px]">
-            <div className="absolute left-[-8px] top-4 w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-white" />
-            <p className="text-xs text-gray-600 leading-snug">
-              Before we start, 5 quick questions to customize the app just for you.
-            </p>
-          </div>
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Cartoon avatar and speech bubble */}
+      <div className="bg-gradient-to-b from-bobby-teal to-bobby-teal-light px-4 pt-12 pb-8 flex flex-col items-center">
+        <div className="w-24 h-24 rounded-full overflow-hidden shadow-md mb-2">
+          <Image src="/bobby-avatar.svg" alt="Bobby" width={96} height={96} className="w-full h-full object-cover" />
         </div>
-
+        <div className="relative bg-white rounded-2xl px-4 py-3 shadow-sm max-w-[320px] mb-4">
+          <div className="absolute left-[-8px] top-4 w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-white" />
+          <p className="text-sm text-gray-600">Before we start, 5 quick questions to customize the app just for you.</p>
+        </div>
         {/* Progress dots */}
-        <div className="flex items-center justify-center gap-2 mt-4 mb-2">
+        <div className="flex items-center justify-center gap-2 mt-2 mb-2">
           <div className={`h-2 rounded-full transition-all ${step === 1 ? "w-6 bg-bobby-teal-dark" : "w-2 bg-bobby-teal-dark/40"}`} />
           <div className={`h-2 rounded-full transition-all ${step === 2 ? "w-6 bg-bobby-teal-dark" : "w-2 bg-bobby-teal-dark/40"}`} />
           <div className="w-2 h-2 rounded-full bg-bobby-teal-dark/40" />
@@ -164,14 +159,14 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="px-5 py-6 pb-32">
-        {step === 1 ? (
+      {/* Step content and profile info below in scrollable layout */}
+      <div className="flex-1 flex flex-col items-center justify-start px-4 pt-4 pb-32 overflow-y-auto">
+        {/* Onboarding steps */}
+        {step === 1 && (
           <>
-            <h1 className="text-2xl font-bold text-gray-900 text-center mb-6">
-              Do you avoid any of these allergens?
-            </h1>
-            <div className="grid grid-cols-3 gap-2.5">
-              {ALLERGENS.map((name) => {
+            <h1 className="text-2xl font-bold text-center mb-6">Do you avoid any of these allergens?</h1>
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-3 w-full max-w-lg mb-8">
+              {ALLERGEN_DISPLAY.map((name) => {
                 const isSelected = selectedAllergens.has(name);
                 return (
                   <button
@@ -188,13 +183,18 @@ export default function ProfilePage() {
                 );
               })}
             </div>
+            <button
+              onClick={() => setStep(2)}
+              className="w-full max-w-lg py-4 rounded-full bg-gradient-to-r from-bobby-teal to-bobby-teal-dark text-white font-bold text-lg mb-4"
+            >
+              Continue
+            </button>
           </>
-        ) : (
+        )}
+        {step === 2 && (
           <>
-            <h1 className="text-2xl font-bold text-gray-900 text-center mb-6">
-              What eating habits do you follow?
-            </h1>
-            <div className="grid grid-cols-2 gap-2.5">
+            <h1 className="text-2xl font-bold text-center mb-6">What eating habits do you follow?</h1>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full max-w-lg mb-8">
               {EATING_HABITS.map((name) => {
                 const isSelected = selectedHabits.has(name);
                 return (
@@ -212,19 +212,115 @@ export default function ProfilePage() {
                 );
               })}
             </div>
+            <button
+              onClick={handleSave}
+              className="w-full max-w-lg py-4 rounded-full bg-gradient-to-r from-bobby-teal to-bobby-teal-dark text-white font-bold text-lg mb-8"
+            >
+              Save & Continue
+            </button>
           </>
         )}
-      </div>
 
-      {/* Bottom button */}
-      <div className="fixed bottom-16 left-0 right-0 px-5 py-4 bg-white">
-        <button
-          onClick={() => (step === 1 ? setStep(2) : handleSave())}
-          className="w-full py-4 rounded-full bg-gradient-to-r from-bobby-teal to-bobby-teal-dark text-white font-bold text-lg"
-        >
-          {step === 1 ? "Continue" : "Save & Continue"}
-        </button>
+        {/* Profile info and sections always visible below */}
+        <h1 className="text-2xl font-bold text-center mb-4">My Profile</h1>
+        <div className="bg-white rounded-xl shadow p-4 mb-6 w-full max-w-lg mx-auto">
+          <div className="flex flex-col divide-y divide-gray-200">
+            <div className="flex items-center justify-between py-3">
+              <span>Name</span>
+              <span className="text-gray-400">{demoProfile.name || ""}</span>
+            </div>
+            <div className="flex items-center justify-between py-3">
+              <span>Email</span>
+              <span className="text-gray-400">demo123@gmail.com</span>
+            </div>
+            <div className="flex items-center justify-between py-3">
+              <span>Change Password</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+            <div className="flex items-center justify-between py-3">
+              <span>Additional Details</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Personalization */}
+        <div className="mb-6 w-full max-w-lg mx-auto">
+          <h2 className="font-semibold text-lg mb-2">Personalization</h2>
+          <div className="bg-white rounded-xl shadow divide-y divide-gray-200">
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>My Lists</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>Scan History</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>Update Allergens</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>Retake the Quiz</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Meet Bobby */}
+        <div className="mb-6 w-full max-w-lg mx-auto">
+          <h2 className="font-semibold text-lg mb-2">Meet Bobby</h2>
+          <div className="bg-white rounded-xl shadow divide-y divide-gray-200">
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>Who's Bobby?</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Help & Support */}
+        <div className="mb-6 w-full max-w-lg mx-auto">
+          <h2 className="font-semibold text-lg mb-2">Help & Support</h2>
+          <div className="bg-white rounded-xl shadow divide-y divide-gray-200">
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>Contact Support</span>
+              <span className="text-bobby-teal font-medium">info@bobbyapproved.com</span>
+            </div>
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>Useful Links</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Legal & Disclaimers */}
+        <div className="mb-6 w-full max-w-lg mx-auto">
+          <h2 className="font-semibold text-lg mb-2">Legal & Disclaimers</h2>
+          <div className="bg-white rounded-xl shadow divide-y divide-gray-200">
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>End user license agreement</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+            <div className="flex items-center justify-between py-3 px-4">
+              <span>Non-affiliate disclosure</span>
+              <span className="text-gray-400">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Socials and logout */}
+        <div className="flex flex-col items-center gap-4 w-full max-w-lg mx-auto">
+          <div className="flex gap-4 mb-2">
+            <span className="rounded-full bg-gray-100 p-2"><i className="fab fa-instagram" /></span>
+            <span className="rounded-full bg-gray-100 p-2"><i className="fab fa-youtube" /></span>
+            <span className="rounded-full bg-gray-100 p-2"><i className="fab fa-tiktok" /></span>
+            <span className="rounded-full bg-gray-100 p-2"><i className="fab fa-facebook" /></span>
+          </div>
+          <button className="w-full py-3 rounded-full bg-bobby-teal text-white font-bold">Logout</button>
+          <button className="w-full py-2 text-red-600 font-semibold">Delete Account</button>
+        </div>
       </div>
+      {/* Bottom navigation remains unchanged */}
     </div>
   );
 }
