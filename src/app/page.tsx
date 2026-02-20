@@ -153,8 +153,8 @@ const ALL_PRODUCTS = [
 
 const PROMOS = [
   { brand: "FlavCity Café", deal: "15% off first order + free gift", code: "CAFEAPP15", color: "#0D9488", url: "https://www.shopflavcity.com/pages/cafe" },
-  { brand: "Thrive Market", deal: "25% off your first order", code: "BOBBY25", color: "#1B7742", url: "" },
-  { brand: "Butcher Box", deal: "Free ground beef for life", code: "FLAVCITY", color: "#991B1B", url: "" },
+  { brand: "Thrive Market", deal: "25% off your first order", code: "BOBBY25", color: "#1B7742", url: "https://thrivemarket.com/bobby" },
+  { brand: "Butcher Box", deal: "Free ground beef for life", code: "FLAVCITY", color: "#991B1B", url: "https://subscribe.butcherbox.com/home-8-bps" },
 ];
 
 const FLAV_PRODUCTS = [
