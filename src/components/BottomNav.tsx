@@ -95,6 +95,27 @@ export default function BottomNav() {
             );
           }
 
+          if (tab.href === "/" && pathname === "/") {
+            return (
+              <button
+                key={tab.label}
+                onClick={() => window.dispatchEvent(new CustomEvent("go-home"))}
+                className="flex flex-col items-center gap-0.5 min-w-[56px]"
+              >
+                {tab.icon(isActive)}
+                <span
+                  className={`text-[10px] ${
+                    isActive
+                      ? "text-bobby-teal-dark font-semibold"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {tab.label}
+                </span>
+              </button>
+            );
+          }
+
           return (
             <Link
               key={tab.label}
