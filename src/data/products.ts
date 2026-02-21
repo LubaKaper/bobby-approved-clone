@@ -233,6 +233,24 @@ export const products: Product[] = [
     category: "Snacks",
   },
   {
+  barcode: "852466006856",
+  product_name: "Chocolate Date Bars - Salted Peanut",
+  brand: "Simply",
+  image: "/products/placeholder.jpg",
+  ingredients: [
+    "Dates",
+    "Peanuts",
+    "Organic Dark Chocolate",
+    "Evaporated Organic Cane Sugar",
+    "Organic Chocolate Liquor",
+    "Organic Cocoa Butter",
+    "Organic Sunflower Lecithin",
+    "Organic Vanilla",
+    "Salt"
+  ],
+  category: "Bars"
+},
+  {
     barcode: "8850539240444",
     product_name: "MAESRI MASAMAN CURRY PASTE",
     brand: "Maesri",
